@@ -1,0 +1,33 @@
+{
+    "apiKey": "c9d60ae4c7e70c4b6c4ebd3e8056d2b8",
+
+    "notifier": {
+
+        "name": "Bugsnag Ruby",
+
+        "version": "1.0.11",
+
+        "url": "https://github.com/bugsnag/bugsnag-ruby"
+    },
+
+    "events": [{
+
+        "payloadVersion": "2",
+
+        "exceptions": [{
+
+            "errorClass": "NoMethodError",
+
+            "stacktrace": [{
+
+                "file": "controllers/auth/session_controller.rb",
+
+                "lineNumber": 1234,
+
+                "method": "create"
+
+            }]
+        }]
+
+    }]
+}

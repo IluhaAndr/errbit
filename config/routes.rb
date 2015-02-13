@@ -62,6 +62,10 @@ Rails.application.routes.draw do
 
   match '/api/v3/projects/:project_id/notices' => 'api/v3/notices#create', via: [:post, :options]
 
+  namespace :bugsnag do
+    resources :notices, only: :create
+  end
+
   root :to => 'apps#index'
 end
 

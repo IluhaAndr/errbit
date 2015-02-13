@@ -15,6 +15,8 @@ require 'hoptoad_notifier'
 # * <tt>:notifier</tt> - information to identify the source of the error report
 #
 class ErrorReport
+  class ApiKeyError < StandardError; end
+
   attr_reader :error_class, :message, :request, :server_environment, :api_key,
               :notifier, :user_attributes, :framework, :notice
 
