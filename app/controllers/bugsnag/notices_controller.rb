@@ -8,7 +8,8 @@ class Bugsnag::NoticesController < ApplicationController
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Headers'] = 'origin, content-type, accept'
 
-    parser = Bugsnag::NoticeParser.new(params)
+    payload = ActiveSupport::JSON.decode(request.body)
+    parser = Bugsnag::NoticeParser.new(payload)
     reports = parser.reports
     notices_ids = []
     invalid_notices, old_app_notices_size = 0, 0

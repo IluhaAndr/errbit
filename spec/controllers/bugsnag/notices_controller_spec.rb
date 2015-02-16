@@ -11,7 +11,7 @@ describe Bugsnag::NoticesController, type: :controller do
     json = Rails.root.join('spec', 'fixtures', 'bugsnag_request.json').read
     data = JSON.parse(json)
     data['apiKey'] = app.api_key
-    post :create, data
+    post :create, data.to_json
     notice = Notice.last
     expect(response.body).to match(/\ANotices with ids [0-9a-z, ]+ were saved\.\Z/)
     expect(Notice.count).to eq(2)
@@ -37,7 +37,7 @@ describe Bugsnag::NoticesController, type: :controller do
     json = Rails.root.join('spec', 'fixtures', 'bugsnag_request.json').read
     data = JSON.parse(json)
     data['apiKey'] = 'invalid'
-    post :create, data
+    post :create, data.to_json
     expect(response.status).to eq(422)
     expect(response.body).to eq('Your API key is unknown.')
     expect(Notice.count).to eq(0)
@@ -48,7 +48,7 @@ describe Bugsnag::NoticesController, type: :controller do
     json = Rails.root.join('spec', 'fixtures', 'bugsnag_request.json').read
     data = JSON.parse(json)
     data['apiKey'] = upgraded_app.api_key
-    post :create, data
+    post :create, data.to_json
     expect(response.body).to match(/\ANotices with ids [0-9a-z, ]+ were saved\. 1 old app notices were found\.\Z/)
     expect(Notice.count).to eq(1)
   end
@@ -58,7 +58,7 @@ describe Bugsnag::NoticesController, type: :controller do
     json = Rails.root.join('spec', 'fixtures', 'bugsnag_request_with_device_app_optional.json').read
     data = JSON.parse(json)
     data['apiKey'] = upgraded_app.api_key
-    post :create, data
+    post :create, data.to_json
     expect(response.body).to match(/\ANotices with ids [0-9a-z, ]+ were saved\.\Z/)
     expect(Notice.count).to eq(1)
   end
@@ -68,7 +68,7 @@ describe Bugsnag::NoticesController, type: :controller do
     json = Rails.root.join('spec', 'fixtures', 'bugsnag_request_without_optional.json').read
     data = JSON.parse(json)
     data['apiKey'] = upgraded_app.api_key
-    post :create, data
+    post :create, data.to_json
     expect(response.body).to eq('No valid events were found.')
     expect(Notice.count).to eq(0)
   end

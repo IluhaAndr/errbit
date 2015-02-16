@@ -49,7 +49,7 @@ class Bugsnag::NoticeParser
 
   def exception event
     raise Bugsnag::NoExceptionError unless event['exceptions'].present?
-    event['exceptions'].first
+    event['exceptions'].last
   end
 
   def backtrace exception
@@ -77,21 +77,39 @@ class Bugsnag::NoticeParser
   end
 
   def request event
-    device = device(event)
-    environment = tab(event, 'environment')
     request = tab(event, 'request')
-    cookies = tab(event, 'cookies')
+
+    environment = tab(event, 'environment').
+      merge(fetch(event, 'metaData'))
+
+    device = fetch(event, 'device')
+    environment.merge!('device' => device) if device.present?
+
+    deviceState = fetch(event, 'deviceState')
+    environment.merge!('deviceState' => deviceState) if deviceState.present?
+
+    app = fetch(event, 'app')
+    environment.merge!('app' => app) if app.present?
+
+    appState = fetch(event, 'appState')
+    environment.merge!('appState' => appState) if appState.present?
+
+    breadcrumbs = fetch(event, 'breadcrumbs')
+    environment.merge!('breadcrumbs' => breadcrumbs) if breadcrumbs.present?
+
+    threads = fetch(event, 'threads')
+    environment.merge!('threads' => threads) if threads.present?
+
+    exceptions = fetch(event, 'exceptions')
+    exceptions.delete(exception(event))
+    environment.merge!('other exceptions' => exceptions) if exceptions.present?
+
     data = {
       'cgi-data' => environment,
       'session' => tab(event, 'session'),
       'params' => request['params'],
       'url' => request['url'],
-      'component' => event['context'],
-      'referer' => request['clientIp'],
-      'httpMethod' => request['httpMethod'],
-      'headers' => request['headers'],
-      'cookies' => cookies,
-      'threads' => event['threads']
+      'component' => event['context']
     }
     clear_empty(data)
   end
